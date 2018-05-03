@@ -1,18 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.juliana.appfeelings.MainActivity">
+    android:orientation="vertical"
+    android:padding="48dp">
 
     <TextView
+        android:id="@+id/loginLabelMantenimiento"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="0dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="1"
+        android:text="@string/app_name"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
-</android.support.constraint.ConstraintLayout>
+    <EditText
+        android:id="@+id/loginInputNombreUsuario"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="1"
+        android:hint="@string/activity_main_nombreUsuario" />
+
+    <EditText
+        android:id="@+id/loginInputContrasenna"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="1"
+        android:ems="10"
+        android:hint="Contraseña"
+        android:inputType="textPassword" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:text="Recordar Sesión"
+        android:id="@+id/loginCheckBoxSesion"
+        android:layout_weight="1" />
+
+    <Button
+        android:id="@+id/loginButtonIniciarSesion"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="1"
+        android:text="@string/activity_main_iniciarSesion"
+        android:theme="@style/buttonTheme"/>
+
+</LinearLayout>

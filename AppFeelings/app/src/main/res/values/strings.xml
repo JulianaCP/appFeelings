@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">App Feelings</string>
+    <string name="activity_main_nombreUsuario">Nombre Usuario</string>
+    <string name="activity_main_iniciarSesion">Iniciar Sesión</string>
+    <string name="title_activity_navigation_drawer">NavigationDrawer</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
 </resources>
