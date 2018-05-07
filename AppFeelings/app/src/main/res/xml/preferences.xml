@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:key="preferencias_principal">
+    <Preference android:key="nombre_usuario" android:title="nombre de usuario del usuario"/>
+    <Preference android:key="fecha_nacimiento" android:title="fecha nacimiento del usuario"/>
+    <Preference android:key="genero" android:title="genero del usuario"/>
+</PreferenceScreen>

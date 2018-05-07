@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="48dp">
+    android:padding="10dp">
 
     <TextView
         android:id="@+id/loginLabelMantenimiento"
@@ -12,41 +14,119 @@
         android:layout_gravity="center_horizontal"
         android:layout_weight="1"
         android:text="@string/app_name"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold" />
 
-    <EditText
-        android:id="@+id/loginInputNombreUsuario"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_gravity="center_horizontal"
         android:layout_weight="1"
-        android:hint="@string/activity_main_nombreUsuario" />
+        android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/loginInputContrasenna"
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nombre Usuario:"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/mainEditTextUsuario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorPrimary"
+            android:ems="10"
+            android:inputType="textPersonName" />
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_gravity="center_horizontal"
         android:layout_weight="1"
-        android:ems="10"
-        android:hint="Contraseña"
-        android:inputType="textPassword" />
+        android:orientation="vertical">
 
-    <CheckBox
-        android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Genero:"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <RadioButton
+                android:id="@+id/mainRadioButtonFemenino"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Femenino"
+                android:checked="true"/>
+
+            <RadioButton
+                android:id="@+id/mainRadioButtonMasculino"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Masculino" />
+
+        </RadioGroup>
+    </LinearLayout>
+    <View
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/colorPrimary"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:text="Recordar Sesión"
-        android:id="@+id/loginCheckBoxSesion"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:id="@+id/activityMainLinearLayoutFecha">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Fecha Nacimiento:"
+            android:textAlignment="viewStart"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold"
+            tools:paddingVertical="@dimen/activity_vertical_margin" />
+
+        <TextView
+            android:id="@+id/mainLabelFecha"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="TextView"
+            android:textColor="@android:color/black" />
+
+        <ImageView
+            android:id="@+id/mainCalendar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/calendar"/>
+    </LinearLayout>
+
 
     <Button
-        android:id="@+id/loginButtonIniciarSesion"
+        android:id="@+id/mainButtonInisiar"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_gravity="center_horizontal"
         android:layout_weight="1"
-        android:text="@string/activity_main_iniciarSesion"
+        android:text="Iniciar"
         android:theme="@style/buttonTheme"/>
 
 </LinearLayout>
