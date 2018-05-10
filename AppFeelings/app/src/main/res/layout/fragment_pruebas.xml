@@ -5,9 +5,9 @@
     tools:context="com.example.juliana.appfeelings.PruebasFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Pruebas" />
 
+    <ListView
+        android:id="@+id/listViewLinks"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </FrameLayout>
