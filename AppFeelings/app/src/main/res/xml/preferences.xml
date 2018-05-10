@@ -3,4 +3,5 @@
     <Preference android:key="nombre_usuario" android:title="nombre de usuario del usuario"/>
     <Preference android:key="fecha_nacimiento" android:title="fecha nacimiento del usuario"/>
     <Preference android:key="genero" android:title="genero del usuario"/>
+    <Preference android:key="emocion" android:title="emoción"/>
 </PreferenceScreen>

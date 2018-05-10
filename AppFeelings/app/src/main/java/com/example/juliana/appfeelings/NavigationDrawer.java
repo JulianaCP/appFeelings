@@ -21,6 +21,7 @@ public class NavigationDrawer extends AppCompatActivity
     private FragmentManager manager;
     private ContactosFragment contactosFragment;
     private PruebasFragment pruebasFragment;
+    private AvatarFragment avatarFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +38,9 @@ public class NavigationDrawer extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        avatarFragment = new AvatarFragment();
+        callFragment(avatarFragment);
     }
 
     @Override

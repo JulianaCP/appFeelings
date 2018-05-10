@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "796217955937",
+    "firebase_url": "https://appfeelingsdatabase.firebaseio.com",
+    "project_id": "appfeelingsdatabase",
+    "storage_bucket": "appfeelingsdatabase.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:796217955937:android:001a91916448a7f6",
+        "android_client_info": {
+          "package_name": "com.example.juliana.appfeelings"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "796217955937-hbtlp7lk43njvfadk52jdul7nnb37nii.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.juliana.appfeelings",
+            "certificate_hash": "6cd783758c58bcebc279872275b322aeeb3031f3"
+          }
+        },
+        {
+          "client_id": "796217955937-oie57bblaaiv1e953savbchfmikaetps.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgNJ5iYMznCV-Xsg-oU5mRlIs9f84nBnI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "796217955937-oie57bblaaiv1e953savbchfmikaetps.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
