@@ -25,7 +25,6 @@ public class ContactosFragment extends Fragment {
     private View rootView;
     EditText nombre, numeroTelefono;
     Button addContact;
-
     public ContactosFragment() {
         // Required empty public constructor
     }
@@ -41,6 +40,7 @@ public class ContactosFragment extends Fragment {
         nombre = (EditText) rootView.findViewById(R.id.contactName);
         numeroTelefono= (EditText) rootView.findViewById(R.id.contactPhone);
         addContact= (Button)rootView.findViewById(R.id.addButton);
+
 
         addContact.setOnClickListener(new View.OnClickListener() {
 
