@@ -1,5 +1,6 @@
 package com.example.juliana.appfeelings.Clases;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,19 +10,25 @@ import android.widget.TextView;
 
 import com.example.juliana.appfeelings.R;
 
-public class Adaptador extends BaseAdapter{
-    LayoutInflater layoutInflater;
+import java.util.ArrayList;
 
-    public Adaptador(Context context) {
-        layoutInflater = layoutInflater.from(context);
+public class Adaptador extends BaseAdapter{
+    Activity context;
+    LayoutInflater layoutInflater;
+    ArrayList<Test> testArrayList = new ArrayList<>();
+
+    public Adaptador(Activity context, ArrayList<Test> testArrayList) {
+        layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.testArrayList = testArrayList;
+        this.context = context;
     }
     @Override
     public int getCount() {
-        return Global.getListaLinks().size();
+        return testArrayList.size();
     }
     @Override
     public Object getItem(int i) {
-        return Global.getListaLinks().get(i);
+        return testArrayList.get(i);
     }
     @Override
     public long getItemId(int i) {
@@ -30,20 +37,16 @@ public class Adaptador extends BaseAdapter{
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         if (view == null){
-            view = layoutInflater.inflate(R.layout.fragment_pruebas, null);
+            view = layoutInflater.inflate(R.layout.item, null);
         }
         final int posicionListView = i;
         final TextView idTest = (TextView) view.findViewById(R.id.idTest);
         final TextView testName = (TextView) view.findViewById(R.id.testName);
         final TextView testLink = (TextView) view.findViewById(R.id.testLink);
 
-        idTest.setText(Integer.toString(Global.getListaLinks().get(posicionListView).getIdTest()));
-        testName.setText(Global.getListaLinks().get(posicionListView).getTestName());
-        testLink.setText(Global.getListaLinks().get(posicionListView).getLink());
-
-        //idTest.setText(Item.getIdTest());
-        //testName.setText(Item.getTestName());
-        //testLink.setText(Item.getLink());
+        idTest.setText(String.valueOf(testArrayList.get(posicionListView).getIdTest()));
+        testName.setText(testArrayList.get(posicionListView).getTestName());
+        testLink.setText(testArrayList.get(posicionListView).getLink());
         return view;
     }
 }

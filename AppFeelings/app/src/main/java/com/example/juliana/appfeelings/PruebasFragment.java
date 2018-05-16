@@ -26,6 +26,7 @@ public class PruebasFragment extends Fragment {
     private View rootView;
     private ListView listViewLinks;
     private Adaptador adaptador;
+    public static ArrayList<Test> listItems = new ArrayList<>();
 
     public PruebasFragment() {
         // Required empty public constructor
@@ -35,11 +36,12 @@ public class PruebasFragment extends Fragment {
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_pruebas, container, false);
 
-        Test test = new Test(1, "nombre", "link");
-        Global.listItems.add(test);
 
-        listViewLinks.setAdapter(new Adaptador(getActivity().getApplicationContext()));
+        Test test = new Test(1, "nombre", "link");
+        listItems.add(test);
+
         listViewLinks = (ListView)rootView.findViewById(R.id.listViewLinks);
+        listViewLinks.setAdapter(new Adaptador(getActivity(),listItems ));
         //Global.listItems.add(new Test(1, "Test Personalidad", "Link del test"));
 
         return rootView;
