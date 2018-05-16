@@ -42,7 +42,6 @@ public class PruebasFragment extends Fragment {
 
         listViewLinks = (ListView)rootView.findViewById(R.id.listViewLinks);
         listViewLinks.setAdapter(new Adaptador(getActivity(),listItems ));
-        //Global.listItems.add(new Test(1, "Test Personalidad", "Link del test"));
 
         return rootView;
     }
