@@ -1,15 +1,19 @@
 package com.example.juliana.appfeelings;
 
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.speech.RecognizerIntent;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
@@ -126,6 +130,14 @@ public class AvatarFragment extends Fragment {
 
     public void verificar(String frase) {
         System.out.println("frase; " + frase);
+
+        String cadena = frase;
+        int resultado = cadena.indexOf("Llamar");
+        if(resultado != -1) {
+            System.out.println("IDENTIFICA");
+            realizarLlamada(frase);
+        }
+
         String emocion = "";
         switch (frase){
             case Constantes.EMOCION_FELIZ_RECONOCIMIENTO_VOZ:
@@ -151,6 +163,11 @@ public class AvatarFragment extends Fragment {
             Toast.makeText(context,"No se reconoce el comando Comando",Toast.LENGTH_LONG).show();
         }
 
+    }
+
+    public void realizarLlamada(String frase){
+        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:86593117"));
+        startActivity(intent);
     }
 
     public void actualizarSharePreferences(String emocion){
