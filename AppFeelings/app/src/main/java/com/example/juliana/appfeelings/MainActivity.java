@@ -34,9 +34,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView mainLabelFecha;
     private int estadoPriorizadoDia, estadoPriorizadoMes, estadoPriorizadoAño;
     private DatePickerDialog datePickerDialog;
-
-    Firebase
-
     private EditText mainEditTextUsuario;
     private Button mainButton;
     private RadioButton mainRadioButtonFemenino, mainRadioButtonMasculino;
