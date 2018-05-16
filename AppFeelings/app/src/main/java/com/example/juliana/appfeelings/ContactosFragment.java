@@ -91,7 +91,7 @@ public class ContactosFragment extends Fragment {
 
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("Contacto");
-        myRef.child(String.valueOf("Natalin")).push().setValue(contacto);
+        myRef.child(String.valueOf(sharedPreferences_nombre_usuario)).push().setValue(contacto);
     }
 
     public void callFragment(Fragment fragment){
