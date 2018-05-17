@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -19,7 +20,14 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.juliana.appfeelings.Clases.Constantes;
+import com.example.juliana.appfeelings.Clases.HistorialEmociones;
+import com.example.juliana.appfeelings.Clases.Persona;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
+import java.util.Calendar;
 
 
 /**
@@ -31,7 +39,7 @@ public class AvatarFragment extends Fragment {
     private FragmentManager manager;
     private View rootView;
     private SharedPreferences sharedPreferences;
-
+    private Calendar calendario;
 
     //componentes
     ImageButton avatarButtonMicrofono;
@@ -41,17 +49,16 @@ public class AvatarFragment extends Fragment {
     ArrayList<String> avatarResultadoMicrofono;
     ArrayList<String> matchesText;
     private static final int REQUEST_CODE = 1234;
+    private String sharedPreferences_nombre_usuario;
+    private int estadoPriorizadoDia, estadoPriorizadoMes, estadoPriorizadoAño;
+    private String fechaActual;
+    String emocionSharePreference;
 
-    //constentes emociones drawable
-    private static final int EMOCION_ENOJADO_IMAGEN = R.drawable.enojado;
-    private static final int EMOCION_FELIZ_IMAGEN = R.drawable.feliz;
-    private static final int EMOCION_SIN_ESTADO_IMAGEN = R.drawable.sin_emocion;
-
-    private static final String EMOCION_ENOJADO_TITULO = "Enojado";
-    private static final String EMOCION_FELIZ_TITULO = "Feliz";
-    private static final String EMOCION_SIN_ESTADO_TITULO = "Sin_emocion";
-
-
+    private HistorialEmociones historialEmociones;
+    FirebaseDatabase database;
+    DatabaseReference myRef;
+    SharedPreferences.Editor editor;
+    Context context;
     public AvatarFragment() {
         // Required empty public constructor
     }
@@ -62,6 +69,11 @@ public class AvatarFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_avatar, container, false);
+        context = getActivity().getApplicationContext();
+
+        sharedPreferences =  context.getSharedPreferences("preferences", Context.MODE_PRIVATE);
+        System.out.println("sharedPreferences ref: "+sharedPreferences);
+
         avatarImageView = (ImageView) rootView.findViewById(R.id.avatarimageView);
         avatarButtonMicrofono = (ImageButton) rootView.findViewById(R.id.avatarButtonMicrofono);
         avatarButtonMicrofono.setOnClickListener(new View.OnClickListener() {
@@ -81,34 +93,90 @@ public class AvatarFragment extends Fragment {
         });
         verificarSharedPreferences();
 
-
         return rootView;
     }
 
     public void verificarSharedPreferences() {
-        sharedPreferences = getActivity().getSharedPreferences("preferences", Context.MODE_PRIVATE);
-        String emocionSharePreference = sharedPreferences.getString("nombre_usuario", "");
+        //sharedPreferences = getActivity().getSharedPreferences("preferences", Context.MODE_PRIVATE);
+        emocionSharePreference = sharedPreferences.getString("emocion", "");
         verificarAvatar(emocionSharePreference);
     }
 
     public void verificarAvatar(String emocionActual) {
 
         switch (emocionActual) {
-            case EMOCION_FELIZ_TITULO:
-                avatarImageView.setImageResource(EMOCION_FELIZ_IMAGEN);
+            case Constantes.EMOCION_FELIZ_TITULO:
+                avatarImageView.setImageResource(Constantes.EMOCION_FELIZ_IMAGEN);
                 break;
-            case EMOCION_ENOJADO_TITULO:
-                avatarImageView.setImageResource(EMOCION_ENOJADO_IMAGEN);
+            case Constantes.EMOCION_ENOJADO_TITULO:
+                avatarImageView.setImageResource(Constantes.EMOCION_ENOJADO_IMAGEN);
+                break;
+            case Constantes.EMOCION_EMOCIONADO_TITULO:
+                avatarImageView.setImageResource(Constantes.EMOCION_EMOCIONADO_IMAGEN);
+                break;
+            case Constantes.EMOCION_TRISTE_TITULO:
+                avatarImageView.setImageResource(Constantes.EMOCION_TRISTE_IMAGEN);
                 break;
             default:
-                avatarImageView.setImageResource(EMOCION_SIN_ESTADO_IMAGEN);
+                avatarImageView.setImageResource(Constantes.EMOCION_SIN_ESTADO_IMAGEN);
                 break;
         }
     }
 
 
     public void verificar(String frase) {
-        System.out.println("palabra en microfono: " + frase);
+        System.out.println("frase; " + frase);
+        String emocion = "";
+        switch (frase){
+            case Constantes.EMOCION_FELIZ_RECONOCIMIENTO_VOZ:
+                emocion = Constantes.EMOCION_FELIZ_TITULO;
+                break;
+            case Constantes.EMOCION_ENOJADO_RECONOCIMIENTO_VOZ:
+                emocion = Constantes.EMOCION_ENOJADO_TITULO;
+                break;
+            case Constantes.EMOCION_TRISTE_RECONOCIMIENTO_VOZ:
+                emocion = Constantes.EMOCION_TRISTE_TITULO;
+                break;
+            case Constantes.EMOCION_EMOCIONADO_RECONOCIMIENTO_VOZ:
+                emocion = Constantes.EMOCION_EMOCIONADO_TITULO;
+                break;
+        }
+        if(!emocion.equals("")){
+            System.out.println("emocion escuchada: "+ emocion);
+            verificarAvatar(emocion);
+            actualizarSharePreferences(emocion);
+            guardarDatoFireBase(emocion);
+        }
+        else{
+            Toast.makeText(context,"No se reconoce el comando Comando",Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+    public void actualizarSharePreferences(String emocion){
+       // sharedPreferences =  getActivity().getSharedPreferences("preferencias", Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString("emocion",emocion);
+        editor.apply();
+    }
+
+    public void guardarDatoFireBase(String emocion){
+        System.out.println("emocion}: " + emocion);
+
+        sharedPreferences_nombre_usuario = sharedPreferences.getString("nombre_usuario","");
+        historialEmociones = new HistorialEmociones();
+        historialEmociones.setEmocion(emocion);
+        obtenerFecha();
+        historialEmociones.setFecha(fechaActual);
+        historialEmociones.setNombre_usuario(sharedPreferences_nombre_usuario);
+
+        System.out.println("sharedPreferences_nombre_usuario " +sharedPreferences_nombre_usuario );
+        System.out.println("emocion " +emocion );
+        System.out.println("fechaActual " + fechaActual);
+
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference("HistorialEmociones");
+        myRef.child(String.valueOf(sharedPreferences_nombre_usuario)).push().setValue(historialEmociones);
     }
 
     @Override
@@ -132,6 +200,14 @@ public class AvatarFragment extends Fragment {
         }   else {
             return false;
         }
+    }
+
+    public void obtenerFecha(){
+        calendario = Calendar.getInstance();
+        estadoPriorizadoAño = calendario.get(Calendar.YEAR);
+        estadoPriorizadoMes = calendario.get(Calendar.MONTH);
+        estadoPriorizadoDia = calendario.get(Calendar.DAY_OF_MONTH);
+        fechaActual = estadoPriorizadoDia+"-"+(estadoPriorizadoMes+1)+"-"+estadoPriorizadoAño;
     }
 
     public void callFragment(Fragment fragment){

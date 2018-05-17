@@ -8,13 +8,13 @@ public class Persona {
     private String nombre_usuario;
     private String fecha_nacimimento;
     private String genero;
-
+/*
     public Persona(String nombre_usuario, String fecha_nacimimento, String genero) {
         this.nombre_usuario = nombre_usuario;
         this.fecha_nacimimento = fecha_nacimimento;
         this.genero = genero;
     }
-
+*/
     public String getNombre_usuario() {
         return nombre_usuario;
     }

@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -16,6 +17,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.juliana.appfeelings.Clases.Persona;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Calendar;
 
@@ -25,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView mainLabelFecha;
     private int estadoPriorizadoDia, estadoPriorizadoMes, estadoPriorizadoAño;
     private DatePickerDialog datePickerDialog;
-
     private EditText mainEditTextUsuario;
     private Button mainButton;
     private RadioButton mainRadioButtonFemenino, mainRadioButtonMasculino;
@@ -38,13 +46,18 @@ public class MainActivity extends AppCompatActivity {
 
 
     private SharedPreferences sharedPreferences;
-    private Persona persona;
+
 
     private String sharedPreferences_nombre_usuario;
     private String sharedPreferences_fecha_nacimiento;
     private String sharedPreferences_genero;
     private Intent intent;
     private SharedPreferences.Editor editor;
+
+    private Persona persona;
+    FirebaseDatabase database;
+    DatabaseReference myRef;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,10 +90,11 @@ public class MainActivity extends AppCompatActivity {
 
                 //verificar no faltan elementos
                 if(!mainValorUsername.equals("")) {
-                    persona = new Persona(mainValorUsername, mainValorFecha, mainValorGenero);
-                    llenarDatosFireBase(); //FALTA -> insertar Persoma en firebase
-                    llenarDatosSharePreferences(); //insertar datos de persona en shared preferences
-                    callNavigation(); // abrir apllicacion avatar
+                    persona = new Persona();
+                    persona.setNombre_usuario(mainValorUsername);
+                    persona.setFecha_nacimimento(mainValorFecha);
+                    persona.setGenero(mainValorGenero);
+                    llenarDatosFireBase();
                 }
                 else{
                     Toast.makeText(getApplicationContext(),"Error en los datos",Toast.LENGTH_LONG).show();
@@ -98,8 +112,40 @@ public class MainActivity extends AppCompatActivity {
         });
     }
     public void llenarDatosFireBase(){ //FALTA IMPLEMENTAR
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference("Persona");
+        myRef.child(mainValorUsername)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+
+
+                    @Override
+                    public void onDataChange(DataSnapshot data) {
+                        if(data.getValue() == null){
+                            database = FirebaseDatabase.getInstance();
+                            myRef = database.getReference("Persona");
+                            myRef.child(String.valueOf(mainValorUsername)).setValue(persona);
+
+                            llenarDatosSharePreferences(); //insertar datos de persona en shared preferences
+                            callNavigation(); // abrir apllicacion avatar
+                        }
+                        else{
+                            Toast.makeText(getApplicationContext(),"El usuario ya existe:",Toast.LENGTH_LONG).show();
+                        }
+
+                        /*
+                        System.out.println(data);
+                        Persona eper = data.getValue(Persona.class);
+                        System.out.println("per: " + eper.getNombre_usuario());
+                        */
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Toast.makeText(getApplicationContext(), "Ocurrio un error", Toast.LENGTH_LONG).show();
+                    }
+                });
 
     }
+
     public void llenarDatosSharePreferences(){
         editor = sharedPreferences.edit();
         editor.putString("nombre_usuario",mainValorUsername);
@@ -116,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(!sharedPreferences_nombre_usuario.equals("") && !sharedPreferences_fecha_nacimiento.equals("")
                 && !sharedPreferences_genero.equals("")){
+            System.out.println("entro por aqui: " + sharedPreferences_nombre_usuario);
             callNavigation();
         }
     }
