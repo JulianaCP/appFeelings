@@ -16,6 +16,7 @@ import android.speech.RecognizerIntent;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,13 +26,19 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.juliana.appfeelings.Clases.Constantes;
+import com.example.juliana.appfeelings.Clases.Contacto;
 import com.example.juliana.appfeelings.Clases.HistorialEmociones;
 import com.example.juliana.appfeelings.Clases.Persona;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+
+import static android.content.ContentValues.TAG;
 
 
 /**
@@ -57,6 +64,7 @@ public class AvatarFragment extends Fragment {
     private int estadoPriorizadoDia, estadoPriorizadoMes, estadoPriorizadoAño;
     private String fechaActual;
     String emocionSharePreference;
+    public String contact;
 
     private HistorialEmociones historialEmociones;
     FirebaseDatabase database;
@@ -67,13 +75,13 @@ public class AvatarFragment extends Fragment {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_avatar, container, false);
         context = getActivity().getApplicationContext();
+
 
         sharedPreferences =  context.getSharedPreferences("preferences", Context.MODE_PRIVATE);
         System.out.println("sharedPreferences ref: "+sharedPreferences);
@@ -106,7 +114,46 @@ public class AvatarFragment extends Fragment {
         verificarAvatar(emocionSharePreference);
     }
 
-    public void verificarAvatar(String emocionActual) {
+    public void obtenerContacto(final String frase) {
+        sharedPreferences_nombre_usuario = sharedPreferences.getString("nombre_usuario","");
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference("Contacto");
+        String[] parts = frase.split(" ");
+        final String part2 = parts[2]; //obtiene: 19-A
+        System.out.println("part "+ part2);
+        ValueEventListener postListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    System.out.println("POST "+postSnapshot.getKey());
+                    System.out.println("POST "+sharedPreferences_nombre_usuario);
+                    if (postSnapshot.getKey().equals(sharedPreferences_nombre_usuario)){
+
+                        Contacto user = postSnapshot.child(part2).getValue(Contacto.class);
+                        if (user != null) {
+                            contact = user.getTelefono();
+                            System.out.println("telefono: " + contact);
+                            realizarLlamada(frase, contact);
+                        } else {
+                            System.out.println("Error");
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting Post failed, log a message
+                Log.w("Nada", "loadPost:onCancelled", databaseError.toException());
+                // ...
+            }
+        };
+
+        myRef.addValueEventListener(postListener);
+    }
+
+            public void verificarAvatar(String emocionActual) {
 
         switch (emocionActual) {
             case Constantes.EMOCION_FELIZ_TITULO:
@@ -135,7 +182,7 @@ public class AvatarFragment extends Fragment {
         int resultado = cadena.indexOf("Llamar");
         if(resultado != -1) {
             System.out.println("IDENTIFICA");
-            realizarLlamada(frase);
+            obtenerContacto(frase);
         }
 
         String emocion = "";
@@ -165,8 +212,10 @@ public class AvatarFragment extends Fragment {
 
     }
 
-    public void realizarLlamada(String frase){
-        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:86593117"));
+    public void realizarLlamada(String frase, String numContacto){
+        String s4 = "tel: "+ numContacto;
+        System.out.println("Probando " + s4);
+        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse(s4));
         startActivity(intent);
     }
 
