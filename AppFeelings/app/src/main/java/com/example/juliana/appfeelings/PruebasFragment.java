@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.juliana.appfeelings.Clases.Adaptador;
 import com.example.juliana.appfeelings.Clases.Global;
@@ -33,7 +34,10 @@ public class PruebasFragment extends Fragment {
     private View rootView;
     private ListView listViewLinks;
     private Adaptador adaptador;
-    public static ArrayList<Test> listItems = new ArrayList<>();
+    public final static ArrayList<Test> listItems = new ArrayList<>();
+
+    FirebaseDatabase database;
+    DatabaseReference myRef;
 
     public PruebasFragment() {
         // Required empty public constructor
@@ -43,52 +47,38 @@ public class PruebasFragment extends Fragment {
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_pruebas, container, false);
 
-        //Instancia a la base de datos
-        FirebaseDatabase fdb = FirebaseDatabase.getInstance();
-        //apuntamos al nodo que queremos leer
-        DatabaseReference myRef = fdb.getReference("Test");
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference("Test");
 
-        myRef.addValueEventListener(new ValueEventListener() {
+        ValueEventListener postListener = new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot){
-
-                //leeremos un objeto de tipo Estudiante
-                GenericTypeIndicator<Test> t = new GenericTypeIndicator<Test>() {};
-                Test estudiante = dataSnapshot.getValue(t);
-
-                //formamos el resultado en un string
-                String resultado = "Como objeto java:\n\n";
-                resultado += estudiante + "\n";
-                resultado += "Propiedad Estudiante:\nNombre completo: " +estudiante.getTestName();
-
-                //mostramos en el textview
-                //textview.setText(resultado);
-
-                listItems.add(estudiante);
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                listItems.clear();
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    System.out.println("POST "+postSnapshot.getValue());
+                    Test test = postSnapshot.getValue(Test.class);
+                    listItems.add(test);
+                }
+                //adaptador.notifyDataSetChanged();
             }
             @Override
-            public void onCancelled(DatabaseError error){
-                Log.e("ERROR FIREBASE",error.getMessage());
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting Post failed, log a message
+                Log.w("Nada", "loadPost:onCancelled", databaseError.toException());
+                // ...
             }
+        };
 
-        });
+        myRef.addValueEventListener(postListener);
 
-        Test test = new Test(1, "nombre", "link");
-        listItems.add(test);
-
-        listViewLinks = (ListView)rootView.findViewById(R.id.listViewLinks);
-        listViewLinks.setAdapter(new Adaptador(getActivity(),listItems ));
+        cargarTest();
 
         return rootView;
     }
 
-    public ArrayList<Test> getListaLinks(){
-        //ArrayList<Test> listItems = new ArrayList<>();
-        Global.listItems.add(new Test(1, "Test Personalidad", "Link del test"));
-        Global.listItems.add(new Test(2, "Test Personalidad", "Link del test"));
-        Global.listItems.add(new Test(3, "Test Personalidad", "Link del test"));
-
-        return Global.listItems;
+    private void cargarTest() {
+        listViewLinks = (ListView)rootView.findViewById(R.id.listViewLinks);
+        listViewLinks.setAdapter(new Adaptador(getActivity(),listItems ));
     }
 
     public void callFragment(Fragment fragment){

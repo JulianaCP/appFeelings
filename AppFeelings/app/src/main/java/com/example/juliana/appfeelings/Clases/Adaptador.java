@@ -40,11 +40,11 @@ public class Adaptador extends BaseAdapter{
             view = layoutInflater.inflate(R.layout.item, null);
         }
         final int posicionListView = i;
-        final TextView idTest = (TextView) view.findViewById(R.id.idTest);
+        //final TextView idTest = (TextView) view.findViewById(R.id.idTest);
         final TextView testName = (TextView) view.findViewById(R.id.testName);
         final TextView testLink = (TextView) view.findViewById(R.id.testLink);
 
-        idTest.setText(String.valueOf(testArrayList.get(posicionListView).getIdTest()));
+        //idTest.setText(String.valueOf(testArrayList.get(posicionListView).getIdTest()));
         testName.setText(testArrayList.get(posicionListView).getTestName());
         testLink.setText(testArrayList.get(posicionListView).getLink());
         return view;
