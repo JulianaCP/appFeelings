@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -74,11 +75,25 @@ public class PruebasFragment extends Fragment {
         cargarTest();
 
         return rootView;
+
     }
 
     private void cargarTest() {
         listViewLinks = (ListView)rootView.findViewById(R.id.listViewLinks);
         listViewLinks.setAdapter(new Adaptador(getActivity(),listItems ));
+
+
+        listViewLinks.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Test testSelect = listItems.get(position);
+                String url = testSelect.getLink();
+                Uri uri = Uri.parse(url);
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+            }
+        });
     }
 
     public void callFragment(Fragment fragment){
