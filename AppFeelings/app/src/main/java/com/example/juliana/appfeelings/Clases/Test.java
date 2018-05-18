@@ -11,6 +11,9 @@ public class Test {
         this.link = link;
     }
 
+    public Test() {
+    }
+
     public int getIdTest() {
         return idTest;
     }
