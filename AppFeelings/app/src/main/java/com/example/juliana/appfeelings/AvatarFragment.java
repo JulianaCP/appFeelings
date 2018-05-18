@@ -4,6 +4,7 @@ package com.example.juliana.appfeelings;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -16,6 +17,7 @@ import android.speech.RecognizerIntent;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +27,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.juliana.appfeelings.Clases.Consejo;
 import com.example.juliana.appfeelings.Clases.Constantes;
 import com.example.juliana.appfeelings.Clases.Contacto;
 import com.example.juliana.appfeelings.Clases.HistorialEmociones;
@@ -37,6 +40,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Random;
 
 import static android.content.ContentValues.TAG;
 
@@ -59,12 +64,14 @@ public class AvatarFragment extends Fragment {
     //strings - ints - arrays
     ArrayList<String> avatarResultadoMicrofono;
     ArrayList<String> matchesText;
+    ArrayList<String> copia;
     private static final int REQUEST_CODE = 1234;
     private String sharedPreferences_nombre_usuario;
     private int estadoPriorizadoDia, estadoPriorizadoMes, estadoPriorizadoAño;
     private String fechaActual;
     String emocionSharePreference;
     public String contact;
+    public boolean encontrado;
 
     private HistorialEmociones historialEmociones;
     FirebaseDatabase database;
@@ -82,6 +89,10 @@ public class AvatarFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_avatar, container, false);
         context = getActivity().getApplicationContext();
 
+        copia = new ArrayList<String>();
+        copia.add("Consejo1");
+        copia.add("Consejo2");
+        copia.add("Consejo3");
 
         sharedPreferences =  context.getSharedPreferences("preferences", Context.MODE_PRIVATE);
         System.out.println("sharedPreferences ref: "+sharedPreferences);
@@ -115,26 +126,72 @@ public class AvatarFragment extends Fragment {
     }
 
     public void obtenerContacto(final String frase) {
+        encontrado= false;
         sharedPreferences_nombre_usuario = sharedPreferences.getString("nombre_usuario","");
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("Contacto");
         String[] parts = frase.split(" ");
-        final String part2 = parts[2]; //obtiene: 19-A
+        final String part2 = parts[2];
         System.out.println("part "+ part2);
         ValueEventListener postListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    System.out.println("POST "+postSnapshot.getKey());
+                    System.out.println("POST "+postSnapshot);
                     System.out.println("POST "+sharedPreferences_nombre_usuario);
-                    if (postSnapshot.getKey().equals(sharedPreferences_nombre_usuario)){
-
+                    if (postSnapshot.getKey().equals(sharedPreferences_nombre_usuario)) {
                         Contacto user = postSnapshot.child(part2).getValue(Contacto.class);
                         if (user != null) {
                             contact = user.getTelefono();
                             System.out.println("telefono: " + contact);
+                            encontrado = true;
                             realizarLlamada(frase, contact);
+                        } else {
+                            System.out.println("Error");
+                        }
+                    }
+                }
+
+                if (encontrado == false){
+                    Toast.makeText(context,"No se encontro el contacto",Toast.LENGTH_LONG).show();
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting Post failed, log a message
+                Log.w("Nada", "loadPost:onCancelled", databaseError.toException());
+                // ...
+            }
+        };
+
+        myRef.addValueEventListener(postListener);
+    }
+
+
+    public void obtenerConsejo(final String frase) {
+        emocionSharePreference = sharedPreferences.getString("emocion", "");
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference("Consejo");
+        Random rand = new Random();
+        int x = rand.nextInt(copia.size());
+        final String elemento= copia.get(x);
+
+        ValueEventListener postListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    System.out.println("POST "+postSnapshot);
+                    System.out.println("POST "+emocionSharePreference);
+                    if (postSnapshot.getKey().equals(emocionSharePreference)){
+                        System.out.println("Elemento "+ elemento);
+                        Consejo consejoBase = postSnapshot.child(elemento).getValue(Consejo.class);
+
+                        if (consejoBase != null) {
+                            System.out.println(consejoBase.getTexto());
+                            contact = consejoBase.getTexto();
+                            alerta(contact);
+
                         } else {
                             System.out.println("Error");
                         }
@@ -151,6 +208,21 @@ public class AvatarFragment extends Fragment {
         };
 
         myRef.addValueEventListener(postListener);
+    }
+
+
+    public void alerta(String frase){
+        new AlertDialog.Builder(getActivity())
+                .setMessage(frase)
+                .setTitle("Consejo")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener()  {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Intent intent = new Intent(getActivity(),MainActivity.class);
+                        startActivity(intent);
+                        System.out.println("cerrar sesion");
+                    }
+                })
+                .create().show();
     }
 
             public void verificarAvatar(String emocionActual) {
@@ -174,7 +246,6 @@ public class AvatarFragment extends Fragment {
         }
     }
 
-
     public void verificar(String frase) {
         System.out.println("frase; " + frase);
 
@@ -183,6 +254,13 @@ public class AvatarFragment extends Fragment {
         if(resultado != -1) {
             System.out.println("IDENTIFICA");
             obtenerContacto(frase);
+        }
+
+        int obtConsejo = cadena.indexOf("consejo");
+        if(obtConsejo != -1) {
+            System.out.println("IDENTIFICA CONSEJO");
+            obtenerConsejo(frase);
+            //alerta(contact);
         }
 
         String emocion = "";
@@ -283,5 +361,4 @@ public class AvatarFragment extends Fragment {
     public void finish(){
         getFragmentManager().popBackStack();
     }
-
 }
