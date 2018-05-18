@@ -70,17 +70,16 @@ public class ContactosFragment extends Fragment {
                     Toast. makeText ( getActivity() , "The number phone is empty", Toast . LENGTH_SHORT ) . show () ;
                 else{
                     Toast. makeText ( getActivity() , "The contact was added successfully", Toast . LENGTH_SHORT ) . show () ;
-                    guardarDatoFireBase(nombre.getText().toString(), numeroTelefono.getText().toString());
+                   // guardarDatoFireBase(nombre.getText().toString(), numeroTelefono.getText().toString());
+                    llenarDatosFireBase(nombre.getText().toString(), numeroTelefono.getText().toString());
                     Intent intent = new Intent(getActivity(), MainActivity.class);
                     getActivity().startActivity(intent);
                 }
             }
         });
-
         //contenindo fragment
         return rootView;
     }
-
 
     public void guardarDatoFireBase(String nombre, String numero){
         sharedPreferences_nombre_usuario = sharedPreferences.getString("nombre_usuario","");
@@ -88,11 +87,42 @@ public class ContactosFragment extends Fragment {
         contacto.setNombre(nombre);
         contacto.setTelefono(numero);
 
-
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("Contacto");
         myRef.child(String.valueOf(sharedPreferences_nombre_usuario)).push().setValue(contacto);
     }
+
+
+    public void llenarDatosFireBase(final String nombre, final String numero){ //FALTA IMPLEMENTAR
+        sharedPreferences_nombre_usuario = sharedPreferences.getString("nombre_usuario","");
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference("Contacto");
+        myRef.child(nombre)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot data) {
+                        if(data.getValue() == null){
+                            database = FirebaseDatabase.getInstance();
+                            myRef = database.getReference("Contacto");
+
+                            contacto = new Contacto();
+                            contacto.setNombre(nombre);
+                            contacto.setTelefono(numero);
+                            System.out.println("Shared "+sharedPreferences_nombre_usuario);
+                            myRef.child(String.valueOf(sharedPreferences_nombre_usuario)).child(String.valueOf(nombre)).setValue(contacto);
+                        }
+                        else{
+                            Toast.makeText(getActivity(),"El usuario ya existe:",Toast.LENGTH_LONG).show();
+                        }
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Toast.makeText(getActivity(), "Ocurrio un error", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+    }
+
 
     public void callFragment(Fragment fragment){
         manager = getActivity().getSupportFragmentManager();
