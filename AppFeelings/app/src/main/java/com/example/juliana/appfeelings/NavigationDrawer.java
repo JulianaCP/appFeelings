@@ -64,6 +64,10 @@ public class NavigationDrawer extends AppCompatActivity
             pruebasFragment = new PruebasFragment();
             callFragment(pruebasFragment);
         }
+        else if(id == R.id.nav_avatar){
+            avatarFragment = new AvatarFragment();
+            callFragment(avatarFragment);
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

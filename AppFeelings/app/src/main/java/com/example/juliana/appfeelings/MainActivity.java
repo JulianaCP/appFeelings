@@ -111,6 +111,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    protected void onRestart() {
+        finishAffinity();
+
+        super.onRestart();
+    }
+
+
     public void llenarDatosFireBase(){ //FALTA IMPLEMENTAR
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("Persona");
