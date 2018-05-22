@@ -47,7 +47,7 @@ public class PruebasFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_pruebas, container, false);
-
+        listViewLinks = (ListView)rootView.findViewById(R.id.listViewLinks);
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("Test");
 
@@ -60,7 +60,7 @@ public class PruebasFragment extends Fragment {
                     Test test = postSnapshot.getValue(Test.class);
                     listItems.add(test);
                 }
-                //adaptador.notifyDataSetChanged();
+                cargarTest();
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -69,20 +69,6 @@ public class PruebasFragment extends Fragment {
                 // ...
             }
         };
-
-        myRef.addValueEventListener(postListener);
-
-        cargarTest();
-
-        return rootView;
-
-    }
-
-    private void cargarTest() {
-        listViewLinks = (ListView)rootView.findViewById(R.id.listViewLinks);
-        listViewLinks.setAdapter(new Adaptador(getActivity(),listItems ));
-
-
         listViewLinks.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override
@@ -94,6 +80,17 @@ public class PruebasFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
+        myRef.addValueEventListener(postListener);
+
+        cargarTest();
+
+        return rootView;
+
+    }
+
+    private void cargarTest() {
+        listViewLinks.setAdapter(new Adaptador(getActivity(),listItems ));
     }
 
     public void callFragment(Fragment fragment){
