@@ -121,37 +121,44 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void llenarDatosFireBase(){ //FALTA IMPLEMENTAR
-        database = FirebaseDatabase.getInstance();
-        myRef = database.getReference("Persona");
-        myRef.child(mainValorUsername)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
+        try{
+
+            database = FirebaseDatabase.getInstance();
+            myRef = database.getReference("Persona");
+            myRef.child(mainValorUsername)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
 
 
-                    @Override
-                    public void onDataChange(DataSnapshot data) {
-                        if(data.getValue() == null){
-                            database = FirebaseDatabase.getInstance();
-                            myRef = database.getReference("Persona");
-                            myRef.child(String.valueOf(mainValorUsername)).setValue(persona);
+                        @Override
+                        public void onDataChange(DataSnapshot data) {
+                            if(data.getValue() == null){
+                                database = FirebaseDatabase.getInstance();
+                                myRef = database.getReference("Persona");
+                                myRef.child(String.valueOf(mainValorUsername)).setValue(persona);
 
-                            llenarDatosSharePreferences(); //insertar datos de persona en shared preferences
-                            callNavigation(); // abrir apllicacion avatar
-                        }
-                        else{
-                            Toast.makeText(getApplicationContext(),"El usuario ya existe:",Toast.LENGTH_LONG).show();
-                        }
+                                llenarDatosSharePreferences(); //insertar datos de persona en shared preferences
+                                callNavigation(); // abrir apllicacion avatar
+                            }
+                            else{
+                                Toast.makeText(getApplicationContext(),"El usuario ya existe:",Toast.LENGTH_LONG).show();
+                            }
 
                         /*
                         System.out.println(data);
                         Persona eper = data.getValue(Persona.class);
                         System.out.println("per: " + eper.getNombre_usuario());
                         */
-                    }
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Toast.makeText(getApplicationContext(), "Ocurrio un error", Toast.LENGTH_LONG).show();
-                    }
-                });
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Toast.makeText(getApplicationContext(), "Ocurrio un error", Toast.LENGTH_LONG).show();
+                        }
+                    });
+        }catch (Exception e){
+            Toast.makeText(getApplicationContext(), "Error de conexion", Toast.LENGTH_LONG).show();
+        }
+
+
 
     }
 

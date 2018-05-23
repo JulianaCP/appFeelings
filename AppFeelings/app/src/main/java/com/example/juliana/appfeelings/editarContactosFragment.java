@@ -98,8 +98,14 @@ public class editarContactosFragment extends Fragment {
         contacto.setNombre(nombre);
         contacto.setTelefono(numero);
 
-        System.out.println("contactoGlobal.getClave(): "  +contactoGlobal.getClave());
-        myRef.child(sharedPreferences_nombre_usuario).child(contactoGlobal.getClave()).setValue(contacto);
+        try{
+            System.out.println("contactoGlobal.getClave(): "  +contactoGlobal.getClave());
+            myRef.child(sharedPreferences_nombre_usuario).child(contactoGlobal.getClave()).setValue(contacto);
+
+        }catch (Exception e){
+            Toast. makeText ( getActivity() , "Error de conexion", Toast . LENGTH_SHORT ) . show () ;
+
+        }
 
     }
 

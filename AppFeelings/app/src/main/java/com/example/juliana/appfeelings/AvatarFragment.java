@@ -126,88 +126,110 @@ public class AvatarFragment extends Fragment {
     }
 
     public void obtenerContacto(final String frase) {
-        encontrado= false;
-        sharedPreferences_nombre_usuario = sharedPreferences.getString("nombre_usuario","");
-        database = FirebaseDatabase.getInstance();
-        myRef = database.getReference("Contacto");
-        String[] parts = frase.split(" ");
-        final String part2 = parts[2];
-        System.out.println("part "+ part2);
-        ValueEventListener postListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
 
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    System.out.println("POST "+postSnapshot);
-                    System.out.println("POST "+sharedPreferences_nombre_usuario);
-                    if (postSnapshot.getKey().equals(sharedPreferences_nombre_usuario)) {
-                        Contacto user = postSnapshot.child(part2).getValue(Contacto.class);
-                        if (user != null) {
-                            contact = user.getTelefono();
-                            System.out.println("telefono: " + contact);
-                            encontrado = true;
-                            realizarLlamada(frase, contact);
-                        } else {
-                            System.out.println("Error");
+
+        try{
+
+
+            encontrado= false;
+            sharedPreferences_nombre_usuario = sharedPreferences.getString("nombre_usuario","");
+            database = FirebaseDatabase.getInstance();
+            myRef = database.getReference("Contacto");
+            String[] parts = frase.split(" ");
+            final String part2 = parts[2];
+            System.out.println("part "+ part2);
+
+
+            ValueEventListener postListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        System.out.println("POST "+postSnapshot);
+                        System.out.println("POST "+sharedPreferences_nombre_usuario);
+                        if (postSnapshot.getKey().equals(sharedPreferences_nombre_usuario)) {
+                            Contacto user = postSnapshot.child(part2).getValue(Contacto.class);
+                            if (user != null) {
+                                contact = user.getTelefono();
+                                System.out.println("telefono: " + contact);
+                                encontrado = true;
+                                realizarLlamada(frase, contact);
+                            } else {
+                                System.out.println("Error");
+                            }
                         }
                     }
-                }
 
-                if (encontrado == false){
-                    Toast.makeText(context,"No se encontro el contacto",Toast.LENGTH_LONG).show();
+                    if (encontrado == false){
+                        Toast.makeText(context,"No se encontro el contacto",Toast.LENGTH_LONG).show();
+                    }
                 }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Getting Post failed, log a message
-                Log.w("Nada", "loadPost:onCancelled", databaseError.toException());
-                // ...
-            }
-        };
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    // Getting Post failed, log a message
+                    Log.w("Nada", "loadPost:onCancelled", databaseError.toException());
+                    // ...
+                }
+            };
 
-        myRef.addValueEventListener(postListener);
+            myRef.addValueEventListener(postListener);
+        }catch (Exception e){
+            Toast. makeText ( getActivity() , "Error de conexion", Toast . LENGTH_SHORT ) . show () ;
+
+        }
     }
 
 
     public void obtenerConsejo(final String frase) {
-        emocionSharePreference = sharedPreferences.getString("emocion", "");
-        database = FirebaseDatabase.getInstance();
-        myRef = database.getReference("Consejo");
-        Random rand = new Random();
-        int x = rand.nextInt(copia.size());
-        final String elemento= copia.get(x);
 
-        ValueEventListener postListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    System.out.println("POST "+postSnapshot);
-                    System.out.println("POST "+emocionSharePreference);
-                    if (postSnapshot.getKey().equals(emocionSharePreference)){
-                        System.out.println("Elemento "+ elemento);
-                        Consejo consejoBase = postSnapshot.child(elemento).getValue(Consejo.class);
 
-                        if (consejoBase != null) {
-                            System.out.println(consejoBase.getTexto());
-                            contact = consejoBase.getTexto();
-                            alerta(contact);
+        try{
 
-                        } else {
-                            System.out.println("Error");
+            emocionSharePreference = sharedPreferences.getString("emocion", "");
+            database = FirebaseDatabase.getInstance();
+            myRef = database.getReference("Consejo");
+            Random rand = new Random();
+            int x = rand.nextInt(copia.size());
+            final String elemento= copia.get(x);
+
+            ValueEventListener postListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        System.out.println("POST "+postSnapshot);
+                        System.out.println("POST "+emocionSharePreference);
+                        if (postSnapshot.getKey().equals(emocionSharePreference)){
+                            System.out.println("Elemento "+ elemento);
+                            Consejo consejoBase = postSnapshot.child(elemento).getValue(Consejo.class);
+
+                            if (consejoBase != null) {
+                                System.out.println(consejoBase.getTexto());
+                                contact = consejoBase.getTexto();
+                                alerta(contact);
+
+                            } else {
+                                System.out.println("Error");
+                            }
                         }
                     }
                 }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Getting Post failed, log a message
-                Log.w("Nada", "loadPost:onCancelled", databaseError.toException());
-                // ...
-            }
-        };
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    // Getting Post failed, log a message
+                    Log.w("Nada", "loadPost:onCancelled", databaseError.toException());
+                    // ...
+                }
+            };
 
-        myRef.addValueEventListener(postListener);
+            myRef.addValueEventListener(postListener);
+        }catch (Exception e){
+            Toast. makeText ( getActivity() , "Error de conexion", Toast . LENGTH_SHORT ) . show () ;
+
+        }
+
+
+
     }
 
 
@@ -293,8 +315,15 @@ public class AvatarFragment extends Fragment {
     public void realizarLlamada(String frase, String numContacto){
         String s4 = "tel: "+ numContacto;
         System.out.println("Probando " + s4);
-        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse(s4));
-        startActivity(intent);
+        try{
+            Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse(s4));
+            startActivity(intent);
+        }catch (Exception e){
+            Toast. makeText ( getActivity() , "Error al realizar la llamada", Toast . LENGTH_SHORT ) . show () ;
+
+        }
+
+
     }
 
     public void actualizarSharePreferences(String emocion){
@@ -305,22 +334,35 @@ public class AvatarFragment extends Fragment {
     }
 
     public void guardarDatoFireBase(String emocion){
-        System.out.println("emocion}: " + emocion);
 
-        sharedPreferences_nombre_usuario = sharedPreferences.getString("nombre_usuario","");
-        historialEmociones = new HistorialEmociones();
-        historialEmociones.setEmocion(emocion);
-        obtenerFecha();
-        historialEmociones.setFecha(fechaActual);
-        historialEmociones.setNombre_usuario(sharedPreferences_nombre_usuario);
+        try{
 
-        System.out.println("sharedPreferences_nombre_usuario " +sharedPreferences_nombre_usuario );
-        System.out.println("emocion " +emocion );
-        System.out.println("fechaActual " + fechaActual);
+            System.out.println("emocion}: " + emocion);
 
-        database = FirebaseDatabase.getInstance();
-        myRef = database.getReference("HistorialEmociones");
-        myRef.child(String.valueOf(sharedPreferences_nombre_usuario)).push().setValue(historialEmociones);
+            sharedPreferences_nombre_usuario = sharedPreferences.getString("nombre_usuario","");
+            historialEmociones = new HistorialEmociones();
+            historialEmociones.setEmocion(emocion);
+            obtenerFecha();
+            historialEmociones.setFecha(fechaActual);
+            historialEmociones.setNombre_usuario(sharedPreferences_nombre_usuario);
+
+            System.out.println("sharedPreferences_nombre_usuario " +sharedPreferences_nombre_usuario );
+            System.out.println("emocion " +emocion );
+            System.out.println("fechaActual " + fechaActual);
+
+            database = FirebaseDatabase.getInstance();
+            myRef = database.getReference("HistorialEmociones");
+            myRef.child(String.valueOf(sharedPreferences_nombre_usuario)).push().setValue(historialEmociones);
+
+
+
+        }catch (Exception e){
+            Toast. makeText ( getActivity() , "Error de conexion, algunos datos se pueden haber perdido", Toast . LENGTH_SHORT ) . show () ;
+
+        }
+
+
+
     }
 
     @Override

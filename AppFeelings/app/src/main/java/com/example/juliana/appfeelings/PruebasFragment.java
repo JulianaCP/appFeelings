@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.juliana.appfeelings.Clases.Adaptador;
+import com.example.juliana.appfeelings.Clases.Contacto;
 import com.example.juliana.appfeelings.Clases.Global;
 import com.example.juliana.appfeelings.Clases.Test;
 import com.google.firebase.database.DataSnapshot;
@@ -48,45 +49,54 @@ public class PruebasFragment extends Fragment {
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_pruebas, container, false);
         listViewLinks = (ListView)rootView.findViewById(R.id.listViewLinks);
-        database = FirebaseDatabase.getInstance();
-        myRef = database.getReference("Test");
 
-        ValueEventListener postListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                listItems.clear();
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    System.out.println("POST "+postSnapshot.getValue());
-                    Test test = postSnapshot.getValue(Test.class);
-                    listItems.add(test);
-                }
-                cargarTest();
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Getting Post failed, log a message
-                Log.w("Nada", "loadPost:onCancelled", databaseError.toException());
-                // ...
-            }
-        };
-        listViewLinks.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Test testSelect = listItems.get(position);
-                String url = testSelect.getLink();
-                Uri uri = Uri.parse(url);
-                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                startActivity(intent);
-            }
-        });
-
-        myRef.addValueEventListener(postListener);
-
-        cargarTest();
+        llenarDatos();
 
         return rootView;
 
+    }
+    public void llenarDatos(){
+        try{
+            database = FirebaseDatabase.getInstance();
+            myRef = database.getReference("Test");
+
+            ValueEventListener postListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    listItems.clear();
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        System.out.println("POST "+postSnapshot.getValue());
+                        Test test = postSnapshot.getValue(Test.class);
+                        listItems.add(test);
+                    }
+                    cargarTest();
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    // Getting Post failed, log a message
+                    Log.w("Nada", "loadPost:onCancelled", databaseError.toException());
+                    // ...
+                }
+            };
+            listViewLinks.setOnItemClickListener(new AdapterView.OnItemClickListener()
+            {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Test testSelect = listItems.get(position);
+                    String url = testSelect.getLink();
+                    Uri uri = Uri.parse(url);
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    startActivity(intent);
+                }
+            });
+
+            myRef.addValueEventListener(postListener);
+
+
+        }catch (Exception e){
+            Toast. makeText ( getActivity() , "Error de conexion", Toast . LENGTH_SHORT ) . show () ;
+
+        }
     }
 
     private void cargarTest() {
