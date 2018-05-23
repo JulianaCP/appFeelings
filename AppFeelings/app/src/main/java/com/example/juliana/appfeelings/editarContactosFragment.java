@@ -78,7 +78,7 @@ public class editarContactosFragment extends Fragment {
                 if (editarNumeroTelefono.getText().toString().trim().equalsIgnoreCase(""))
                     Toast. makeText ( getActivity() , "The number phone is empty", Toast . LENGTH_SHORT ) . show () ;
                 else{
-                    Toast. makeText ( getActivity() , "The contact was added successfully", Toast . LENGTH_SHORT ) . show () ;
+                    Toast. makeText ( getActivity() , "Se edito correctamente", Toast . LENGTH_SHORT ) . show () ;
 
                     llenarDatosFireBase(editarNombre.getText().toString(), editarNumeroTelefono.getText().toString());
                     finish();

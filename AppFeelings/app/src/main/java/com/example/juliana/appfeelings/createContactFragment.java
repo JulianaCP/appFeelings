@@ -71,7 +71,7 @@ public class createContactFragment extends Fragment {
                 if (numeroTelefono.getText().toString().trim().equalsIgnoreCase(""))
                     Toast. makeText ( getActivity() , "The number phone is empty", Toast . LENGTH_SHORT ) . show () ;
                 else{
-                    Toast. makeText ( getActivity() , "The contact was added successfully", Toast . LENGTH_SHORT ) . show () ;
+                    Toast. makeText ( getActivity() , "Se creo correctamente", Toast . LENGTH_SHORT ) . show () ;
                     // guardarDatoFireBase(nombre.getText().toString(), numeroTelefono.getText().toString());
                     llenarDatosFireBase(nombre.getText().toString(), numeroTelefono.getText().toString());
                     finish();
