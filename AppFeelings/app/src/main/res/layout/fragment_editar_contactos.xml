@@ -14,7 +14,7 @@
             android:id="@+id/imageViewContactEditar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_person"
+            android:src="@drawable/persona"
             tools:layout_height="100dp" />
 
         <TextView
