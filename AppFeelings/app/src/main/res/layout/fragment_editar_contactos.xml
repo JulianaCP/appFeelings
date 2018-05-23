@@ -1,0 +1,59 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.juliana.appfeelings.editarContactosFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="70dp"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/imageViewContactEditar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_person"
+            tools:layout_height="100dp" />
+
+        <TextView
+            android:id="@+id/nomTextView4"
+            android:layout_width="match_parent"
+            android:layout_height="49dp"
+            android:layout_marginTop="@android:dimen/notification_large_icon_width"
+            android:text="Contact Name"
+            android:textSize="24sp" />
+
+        <EditText
+            android:id="@+id/contactNameEditar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName" />
+
+        <TextView
+            android:id="@+id/nomTextView"
+            android:layout_width="match_parent"
+            android:layout_height="49dp"
+            android:text="Phone number"
+            android:textSize="24sp" />
+
+        <EditText
+            android:id="@+id/contactPhoneEditar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="phone" />
+
+        <Button
+            android:id="@+id/buttonEditar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Editar"
+            android:background="@color/colorPrimary"
+            android:textColor="@color/colorBlanco"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+</FrameLayout>
