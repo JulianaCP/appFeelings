@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
@@ -23,6 +24,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.juliana.appfeelings.Clases.Contacto;
+import com.example.juliana.appfeelings.Clases.ContactoRow;
+import com.example.juliana.appfeelings.Clases.Global;
 import com.example.juliana.appfeelings.Clases.HistorialEmociones;
 import com.example.juliana.appfeelings.Clases.Persona;
 import com.google.firebase.database.DataSnapshot;
@@ -49,8 +52,9 @@ public class ContactosFragment extends Fragment {
     ListView listView;
     createContactFragment createContactFragment;
 
-    ArrayList<Contacto> listaContactos = new ArrayList<Contacto>();
+    ArrayList<ContactoRow> listaContactos = new ArrayList<ContactoRow>();
 
+    editarContactosFragment editarContactosFragment;
 
     public ContactosFragment() {
         // Required empty public constructor
@@ -82,6 +86,14 @@ public class ContactosFragment extends Fragment {
         obtenerContactos();
 
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Global.setContacto(listaContactos.get(i));
+                editarContactosFragment = new editarContactosFragment();
+                callFragment(editarContactosFragment);
+            }
+        });
 
         return rootView;
     }
@@ -103,11 +115,16 @@ public class ContactosFragment extends Fragment {
                 listaContactos.clear();
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     System.out.println("postSnapshot.getKey() " + postSnapshot.getKey());
-                    if (postSnapshot.getKey().equals("Jane")) {
-                    //if (postSnapshot.getKey().equals(sharedPreferences_nombre_usuario)) {
+                    //if (postSnapshot.getKey().equals("Jane")) {
+                    if (postSnapshot.getKey().equals(sharedPreferences_nombre_usuario)) {
                         for (DataSnapshot contactoRow : postSnapshot.getChildren()) {
                             Contacto contacto = contactoRow.getValue(Contacto.class);
-                            listaContactos.add(contacto);
+                            ContactoRow contactoRowElement = new ContactoRow();
+                            contactoRowElement.setNombre(contacto.getNombre());
+                            contactoRowElement.setTelefono(contacto.getTelefono());
+                            contactoRowElement.setClave(contactoRow.getKey());
+                            System.out.println("contactoRow.getKey(): " + contactoRow.getKey());
+                            listaContactos.add(contactoRowElement);
                         }
                     }
                     llenarListView();
